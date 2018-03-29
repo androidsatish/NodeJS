@@ -26,7 +26,7 @@ console.log("Connected To MySql !");
  }
 });
 
-var responseData = {"status":true,"msg":"Successfull","email":"","password":""};
+var responseData = {"status":true,"msg":"Successfull","email":"dummy@dummy","password":""};
 
 const server = http.createServer((req, res) => {
 var q = url.parse(req.url,true);
