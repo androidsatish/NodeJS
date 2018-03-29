@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<style>
+.mainContainer {
+display: flex;
+flex-direction: row;
+padding: 20px;
+
+}
+.component {
+  padding: 30px;
+  margin-left: 10px;
+  margin-right: 10px;
+  border: 2px solid tomato;
+  border-radius: 4px;
+}
+.inputField {
+  display: flex;
+  flex-direction: column;
+}
+
+input[type=submit]{
+border: 1px solid tomato;
+border-radius: 4px;
+padding: 5px 10px 5px 10px;
+width: auto;
+height: 35px;
+font-weight: bold;
+}
+input[type=submit]:hover{
+  background-color: tomato;
+  border: 1px solid white;
+  border-radius: 4px;
+  color: white;
+}
+input[type=text],input[type=email],input[type=password]{
+border: 1px solid black;
+border-radius: 2px;
+padding: 5px;
+}
+label{
+  padding: 5px 0px 5px 0px;
+  font-size: 15px;
+}
+#tableMatches{
+  width: 100%;
+}
+
+table,th,td{
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+td{
+  text-align: center;
+}
+td,th{
+  padding: 10px;
+}
+th{
+  background-color: black;
+  color: GhostWhite;
+}
+.shortCell{
+  width: 5%;
+}
+.largeCell{
+  width: 15%;
+}
+.largestCell{
+  width: 30%;
+}
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    border: 1px solid #888;
+    width: 60%;
+}
+
+/* The Close Button */
+.close {
+    color: white;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+</style>
+<body>
+
+
+  <h2>Node.js Example</h2>
+  <div style="display:flex;flex-direction:column">
+
+  <div class="mainContainer">
+  <div class="component" style="width:25%; display:block">
+  <form action="login" method="post">
+
+    <div class="inputField">
+      <label for="email">Email</label>
+        <input type="email" id="email_login" name="email">
+    </div>
+    <br>
+    <div class="inputField">
+      <label for="password">Password</label>
+    <input type="password" id="password_login" name="password">
+    </div>
+    <br>
+    <div>
+    <input type="submit" value="Sign In">
+    </div>
+
+  </form>
+  </div>
+
+  <div class="component" style="width:25%;display:none">
+  <form action="signup" method="post">
+
+    <div class="inputField">
+      <label for="firstName">First Name</label>
+    <input type="text" id="firstName" name="firstName">
+    </div>
+    <br>
+    <div class="inputField">
+      <label for="lastName">Last Name</label>
+    <input type="text" id="lastName" name="lastName">
+    </div>
+    <br>
+    <div class="inputField">
+      <label for="email">Email</label>
+        <input type="email" id="email" name="email">
+    </div>
+    <br>
+    <div class="inputField">
+      <label for="password">Password</label>
+    <input type="password" id="password" name="password">
+    </div>
+
+    <div>
+    <br>
+    <input type="submit" value="Sign Up">
+    </div>
+
+  </form>
+  </div>
+
+<div class="component" style="width: 50%;">
+  <form id="match_form" action="addMatch" method="POST">
+
+    <div class="inputField">
+      <label>Select Group</label>
+    <select name="group" id="group">
+    </select>
+    </div>
+    <br>
+    <div class="inputField">
+      <label>Team 1</label>
+        <select name="opponent1" id="teams">
+        </select>
+    </div>
+    <br>
+    <div class="inputField">
+      <label>Team 2</label>
+      <select name="opponent2" id="teams2">
+      </select>
+    </div>
+    <br>
+    <div class="inputField">
+      <label for="date">Date DD/MM/YYYY</label>
+        <input type="date" id="date" name="date">
+    </div>
+    <br>
+    <div class="inputField">
+      <label for="time">Time HH:MM</label>
+        <input type="time" id="time" name="time">
+    </div>
+    <br>
+    <div class="inputField">
+    <label for="venue">Venue</label>
+    <input list="venues" name="venue" id="venue">
+    <datalist id="venues">
+    </datalist>
+    </div>
+    <br>
+          <input type="submit" value="Add Match" onclick="addMatchDetail">
+  </form>
+</div>
+</div>
+
+<h2 style="background-color:black;text-align:center;color:white;padding:10px">Matches</h2>
+<table id="tableMatches" width="50%">
+  <tr>
+    <th class="shortCell">Match No</th>
+    <th class="shortCell">Group</th>
+    <th class="largeCell">Team 1</th>
+    <th class="largeCell">Team 2</th>
+    <th class="largeCell">Date</th>
+    <th class="largestCell">Venue</th>
+    <th class="largeCell">Status</th>
+  </tr>
+</table>
+
+</div>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span id="closeButton" class="close">&times;</span>
+
+    <div >
+      <div style="text-align:center;background-color:tomato" >
+        <text  id="team1" style="font-size:45px;font-weight:bold;padding:10px;color:white">India</text>
+        <text  style="color:white">Vs</text>
+        <text id="team2" onloadedmetadata=""style="font-size:45px;font-weight:bold;padding:10px;color:white">South Africa</text>
+      </div>
+      <div style="padding:5px 5px 5px 20px;margin-top:20px;">
+        <text> On </text>
+        <text id="matchDate" style="font-size:15px;font-weight:bold;padding:10px"> 25 April 2018</text>
+      </div>
+      <div style="padding:5px 5px 5px 20px">
+        <text> At </text>
+        <text id="matchVenue" style="font-size:15px;font-weight:bold;padding:10px"> M. A. Chidambaram Stadium,Chennai </text>
+      </div>
+
+    </div>
+
+    <h3 style="padding:5px 5px 5px 20px">Who is the winner ? </h3>
+    <form id="resultForm" style="padding:5px 5px 15px 20px">
+    <input type="radio" id="Radioteam1" name="matchTeams" /><label for="Radioteam1"></label>  </br></br>
+    <input type="radio" id="Radioteam2" name="matchTeams" /><label for="Radioteam2"></label> </br></br>
+    <input type="radio" id="Radioteam3" name="matchTeams" value="101" /><label for="Radioteam3">Match Tie</label></br></br>
+    <input type="radio" id="Radioteam4" name="matchTeams" value="102"/><label for="Radioteam4">No Result</label></br></br>
+    Won By Runs/Wickets
+    </br></br>
+    <input type="text" id="wonby"/></br></br>
+    <input type="submit" id="saveResult" value="Save">
+    </form>
+  </div>
+</div>
+
+<script>
+var selectedMatchId = 0
+var selectedIndex
+var matchesData
+function addMatchDetail() {
+  alert("Add Match details clicked !");
+}
+
+$(document).ready(function(){
+  $('#myModal').hide();
+
+  $.get("getAllGroups",function(responseData,status){
+
+    console.log("Groups Data : "+responseData);
+    console.log("Status : "+status);
+    var data = $.parseJSON(JSON.stringify(responseData)).data;
+    console.log("Array : "+data);
+
+    $.each(data, function(key, value) {
+   $('#group').append($('<option>').text(value.groupName).attr('value',value.groupId))
+  });
+
+   $('#group').val(data[0].groupId).change();
+  });
+
+  $('#group').on('change',function(){
+    var grp = this.value;
+    $.get("getAllTeams?grp="+grp,function(responseData,status){
+      console.log("Teams Data : "+responseData);
+      console.log("Status : "+status);
+      var data = $.parseJSON(JSON.stringify(responseData)).data;
+      console.log("Array : "+data);
+
+
+    $('#teams').empty();
+      $.each(data, function(key, value) {
+     $('#teams').append($('<option>').text(value.teamName).attr('value',value.teamId))
+    });
+    $('#teams2').empty();
+    $.each(data, function(key, value) {
+   $('#teams2').append($('<option>').text(value.teamName).attr('value',value.teamId))
+  });
+
+
+    });
+// on change end
+  });
+
+  $.get("getVenues",function(responseData,status){
+    console.log("Venues Data : "+responseData);
+    console.log("Status : "+status);
+    var data = $.parseJSON(JSON.stringify(responseData)).data;
+    console.log("Array : "+data);
+
+    $('#venues').empty();
+    $.each(data,function(key,value){
+  $('#venues').append("<option value='"+value.venueName+"'>");
+    });
+
+  });
+
+  $('#match_form').submit(function(event){
+
+    event.preventDefault();
+    var $form = $(this)
+    url = $form.attr('action');
+      console.log("Action url: "+url);
+
+    var group = $('#group').val();
+    var op1 = $('#teams').val();
+    var op2 = $('#teams2').val();
+    var date = $('#date').val();
+    var time = $('#time').val();
+    var venue = $('#venue').val();
+
+    var op1Name= $('#teams option:selected').text();
+    var op2Name= $('#teams2 option:selected').text();
+
+    console.log(group+"\n"+op1+"\n"+op2+"\n"+date+
+    "\n"+time+"\n"+venue+"\n"+op1Name+"\n"+op2Name);
+
+    if (op1 == op2) {
+      alert("Opponents cannot be same");
+    }else if (date === undefined || date === "") {
+      alert("Select Date");
+    }else if (time === undefined || time === "") {
+      alert("Select Time");
+    }else if (venue === undefined || venue === "") {
+      alert("Enter Venue");
+    }else {
+      console.log("Post data");
+      var params = "group="+group+"&opponent1="+op1+"&opponent2="+op2+
+      "&date="+date+"&time="+time+"&venue="+venue+"&op1="+op1Name+"&op2="+op2Name
+
+      loadDoc("POST","addMatch",params,matchAddResponse);
+    }
+
+  });
+
+  function scroll_to(){
+    $('html, body').animate({
+      scrollTop: $("#tableMatches").offset().top
+    },1000);
+  }
+
+  $.get("getAllMatches",function(responseData,status){
+    console.log("Matches Data : "+responseData);
+    console.log("Status : "+status);
+    scroll_to();
+    var data = $.parseJSON(responseData).data;
+    console.log("Array : "+data);
+    matchesData = data;
+
+    var trHTML = '';
+
+    $.each(data,function(index,value){
+      trHTML += '<tr><td>'+data[index]["matchId"]+'</td><td>'+
+                data[index]["groupName"]+'</td><td>'+
+                data[index]["op1Name"]+'</td><td>'+
+                data[index]["op2Name"]+'</td><td>'+
+                new Date(data[index]["matchDate"])+'</td><td>'+
+                data[index]["venue"]+'</td>'
+
+            if (data[index]["isComplete"]) {
+              trHTML += '<td>'+'<text>'+data[index]["result"]+'</text>'+'</td></tr>'
+            }else {
+              trHTML += '<td>'+'<button class="check" id = '+index+""+'> Set Result </button>'+'</td></tr>'
+            }
+
+    });
+
+    $('#tableMatches').append(trHTML);
+
+    $('.check').click(function(){
+      selectedMatchId = data[this.id]["matchId"];
+      selectedIndex = this.id;
+    var r = confirm('Do you want to change the status of match ? '+selectedMatchId);
+
+
+    if (r) {
+      $('#team1').text(data[this.id]['op1Name']);
+      $('#team2').text(data[this.id]['op2Name']);
+      $('#matchDate').text(new Date(data[this.id]["matchDate"]));
+      $('#matchVenue').text(data[this.id]["venue"]);
+      $('label[for=Radioteam1]').html(data[this.id]['op1Name']);
+      $('label[for=Radioteam2]').html(data[this.id]['op2Name']);
+      $('#Radioteam1').val(data[this.id]['op1Id']);
+      $('#Radioteam2').val(data[this.id]['op2Id']);
+      $('#myModal').show();
+    }
+
+    });
+
+  });
+
+  $('#closeButton').click(function(){
+    $('#myModal').hide();
+  })
+
+  $('input[name=matchTeams]').change(function(){
+    var $label = $("label[for='"+this.id+"']")
+    if (this.value === '101') {
+        $('#wonby').val(" Match Tie ").focus();
+    }else if (this.value === '102') {
+      $('#wonby').val(" No Result ").focus();
+    }else {
+      $('#wonby').val($label.text()+" won by ").focus();
+    }
+
+  });
+
+  $('#resultForm').submit(function(event){
+    event.preventDefault();
+    var result = $('#wonby').val();
+     var selValue = $('input[name=matchTeams]:checked').val();
+    console.log("Result for matchId : "+selectedMatchId+"\n"
+                +"op1Id : "+matchesData[selectedIndex]["op1Id"]+"\n"
+                +"op2Id : "+matchesData[selectedIndex]["op2Id"]+"\n"
+                +"winner : "+selValue+"\n"
+                +"result : "+result);
+
+                var params = "matchId="+selectedMatchId+
+                "&op1Id="+matchesData[selectedIndex]["op1Id"]+
+                "&op2Id="+matchesData[selectedIndex]["op2Id"]+
+                "&winner="+selValue+
+                "&result="+result;
+
+                loadDoc('POST','setMatchResult',params,matchResultSetResponse);
+
+  });
+
+
+
+// end j-query
+});
+function loadDoc(RequestType,url,params,cFunction) {
+var xhttp;
+xhttp = new XMLHttpRequest();
+xhttp.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+    cFunction(this);
+  }
+};
+xhttp.open(RequestType, url, true);
+xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+xhttp.send(params);
+}
+function matchResultSetResponse(xhttp){
+  var responseData = JSON.parse(xhttp.responseText);
+  console.log(responseData.status);
+
+  if (responseData.status) {
+    alert(responseData.msg);
+    location.reload(true);
+  }else {
+    var data = responseData.data;
+    if (data === undefined) {
+    alert(responseData.msg);
+    }else {
+      console.log("Update row");
+
+  }
+}
+}
+function matchAddResponse(xhttp) {
+  var responseData = JSON.parse(xhttp.responseText);
+  console.log(responseData.status);
+
+  if (responseData.status) {
+    alert(responseData.msg);
+    location.reload(true);
+  }else {
+    var data = responseData.data;
+    if (data === undefined) {
+    alert(responseData.msg);
+    }else {
+      var d = new Date(data[0]["matchDate"]);
+      console.log("Date : "+d);
+      var venue = data[0]["venue"];
+      alert(responseData.msg +" "+d+" at "+venue);
+
+    }
+
+  }
+}
+
+</script>
+
+</body>
+</html>
