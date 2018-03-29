@@ -167,7 +167,7 @@ function setMatchResult(data,response) {
           }else {
             console.log(result);
             if (result.affectedRows > 0) {
-              responseData = {"status":true,"msg":"Match Result Added Successfully !"};
+              responseData = {"status":true,"msg":"Match Result Updated Successfully !"};
               response.end(JSON.stringify(responseData));
             }else {
               responseData = {"status":false,"msg":"Tie Result not added"};
@@ -186,7 +186,7 @@ function setMatchResult(data,response) {
           }else {
             console.log(result);
             if (result.affectedRows > 0) {
-              responseData = {"status":true,"msg":"Match Result Added Successfully !"};
+              responseData = {"status":true,"msg":"Match Result Updated Successfully !"};
               response.end(JSON.stringify(responseData));
             }else {
               responseData = {"status":false,"msg":"No Result not added"};
@@ -214,7 +214,7 @@ function setMatchResult(data,response) {
               }else {
                 console.log(result);
                 if (result.affectedRows > 0) {
-                  responseData = {"status":true,"msg":"Match Result Added Successfully !"};
+                  responseData = {"status":true,"msg":"Match Result Updated Successfully !"};
                   response.end(JSON.stringify(responseData));
                 }else {
                   responseData = {"status":false,"msg":"Lost Result not added"};
